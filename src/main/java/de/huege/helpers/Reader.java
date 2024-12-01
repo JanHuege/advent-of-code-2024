@@ -15,4 +15,9 @@ public class Reader {
         }
         return List.of();
     }
+
+    public static List<String> readAllLinesForDay(int day, boolean isExample) {
+        return isExample ? readAllLines("day" + day + "-example.txt") : readAllLines("day" + day + ".txt");
+
+    }
 }
