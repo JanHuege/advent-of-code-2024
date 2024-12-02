@@ -2,17 +2,17 @@ import static org.assertj.core.api.Assertions.*;
 
 import org.junit.jupiter.api.Test;
 
-import de.huege.day1.Day01Solver;
+import de.huege.day2.Day02Solver;
 
-public class Day1 {
+public class Day2 {
 
     @Test
     public void shouldSolvePart1() {
-        assertThat(new Day01Solver().solvePart1(true)).isEqualTo(11);
+        assertThat(new Day02Solver().solvePart1(true)).isEqualTo(2);
     }
 
     @Test
     public void shouldSolvePart2() {
-        assertThat(new Day01Solver().solvePart2(true)).isEqualTo(31);
+        assertThat(new Day02Solver().solvePart2(true)).isEqualTo(4);
     }
 }

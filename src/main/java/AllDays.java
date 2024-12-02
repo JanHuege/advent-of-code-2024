@@ -1,11 +1,13 @@
 import java.io.IOException;
 import java.net.URISyntaxException;
 
-import de.huege.day1.Solver;
+import de.huege.day1.Day01Solver;
+import de.huege.day2.Day02Solver;
 import de.huege.helpers.Day;
 
 void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
-    solveDay(new Solver());
+    solveDay(new Day01Solver());
+    solveDay(new Day02Solver());
 }
 
 void solveDay(Day day) {
