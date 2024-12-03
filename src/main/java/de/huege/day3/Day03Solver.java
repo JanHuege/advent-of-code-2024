@@ -19,35 +19,36 @@ public class Day03Solver extends Day {
 
     @Override
     public long solvePart2(boolean isExample) {
-        var line = this.readInput(isExample).get(0);
+        var lines = this.readInput(isExample);
 
         var sum = 0;
         var enabled = true;
         
-        var pattern = Pattern.compile("don't\\(\\)|do\\(\\)");
+        for (var line: lines) {        
+            var pattern = Pattern.compile("don't\\(\\)|do\\(\\)");
 
-        var lastEnabledIndex = 0;
+            var lastEnabledIndex = 0;
 
-        var activeMatcher = pattern.matcher(line);
-        var matches = activeMatcher.results().toList();
+            var activeMatcher = pattern.matcher(line);
+            var matches = activeMatcher.results().toList();
 
-        for (var match : matches) {
-            if (enabled && match.group().equals("do()")) {
-                sum += calculate(List.of(line.substring(lastEnabledIndex, match.end())));
-                lastEnabledIndex = match.end();
-            } else if (enabled && match.group().equals("don't()")) {
-                sum += calculate(List.of(line.substring(lastEnabledIndex, match.end())));
-                enabled = false;
-            } else if (!enabled && match.group().equals("do()")) {
-                enabled = true;
-                lastEnabledIndex = match.end();
+            for (var match : matches) {
+                if (enabled && match.group().equals("do()")) {
+                    sum += calculate(List.of(line.substring(lastEnabledIndex, match.end())));
+                    lastEnabledIndex = match.end();
+                } else if (enabled && match.group().equals("don't()")) {
+                    sum += calculate(List.of(line.substring(lastEnabledIndex, match.end())));
+                    enabled = false;
+                } else if (!enabled && match.group().equals("do()")) {
+                    enabled = true;
+                    lastEnabledIndex = match.end();
+                }
             }
-        }
 
-        if (enabled) {
-            sum += calculate(List.of(line.substring(lastEnabledIndex, line.length() - 1)));
-        }
-        
+            if (enabled) {
+                sum += calculate(List.of(line.substring(lastEnabledIndex, line.length())));
+            }
+        }    
         return sum;
     } 
 
