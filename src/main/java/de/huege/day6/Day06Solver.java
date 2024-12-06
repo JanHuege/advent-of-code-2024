@@ -80,7 +80,6 @@ public class Day06Solver extends Day {
             }
         }).count();
     }
-    
 }
 
 record Position(int row, int col, Direction direction) {}
