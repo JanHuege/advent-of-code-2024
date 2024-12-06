@@ -1,11 +1,6 @@
 package de.huege.day6;
 
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Optional;
-import java.util.Set;
-import java.util.stream.Collectors;
+import module java.base;
 
 import de.huege.helpers.Day;
 
@@ -31,11 +26,9 @@ public class Day06Solver extends Day {
                 walker.walk(grid);
             } catch (ObstructedException e) {
                 walker.turnRight();
-            } 
-            catch (OutOfBoundsException e) {
+            } catch (OutOfBoundsException e) {
                 break;
-            }
-            catch (LoopDetectedException e) {
+            } catch (LoopDetectedException e) {
                 throw new RuntimeException("This is not good");
             }
         }
@@ -58,11 +51,9 @@ public class Day06Solver extends Day {
                 walker.walk(grid);
             } catch (ObstructedException e) {
                 walker.turnRight();
-            } 
-            catch (OutOfBoundsException e) {
+            } catch (OutOfBoundsException e) {
                 break;
-            } 
-            catch (LoopDetectedException e) {
+            } catch (LoopDetectedException e) {
                 throw new RuntimeException("This is not good");
             }   
         }
@@ -148,15 +139,11 @@ class Walker {
     public void walk(Grid grid) throws OutOfBoundsException, ObstructedException, LoopDetectedException {
         var newPosition = new Position(currentPosition.row() + currentPosition.direction().r, currentPosition.col() + currentPosition.direction().c, currentPosition.direction());
 
-        if (grid.isObstructed(newPosition)) {
-            throw new ObstructedException();
-        } else {
-            if (visited.contains(newPosition)) {
-                throw new LoopDetectedException();
-            }
-            currentPosition = newPosition;
-            visit(newPosition);
-        }
+        if (grid.isObstructed(newPosition)) throw new ObstructedException();
+        if (visited.contains(newPosition)) throw new LoopDetectedException(); 
+            
+        currentPosition = newPosition;
+        visit(newPosition);
     }
 
     public void turnRight() {
@@ -187,8 +174,6 @@ class Walker {
         visited.add(pos);
         path.add(pos);
     }
-
-
 }
 
 class Grid {
