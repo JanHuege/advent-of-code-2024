@@ -8,11 +8,11 @@ public class Day6 {
 
     @Test
     public void shouldSolvePart1() {
-        assertThat(new Day06Solver().solvePart1(true)).isEqualTo();
+        assertThat(new Day06Solver().solvePart1(true)).isEqualTo(41);
     }
 
     @Test
     public void shouldSolvePart2() {
-        assertThat(new Day06Solver().solvePart2(true)).isEqualTo();
+        assertThat(new Day06Solver().solvePart2(true)).isEqualTo(6);
     }
 }

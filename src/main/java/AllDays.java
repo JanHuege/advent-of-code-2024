@@ -6,6 +6,7 @@ import de.huege.day2.Day02Solver;
 import de.huege.day3.Day03Solver;
 import de.huege.day4.Day04Solver;
 import de.huege.day5.Day05Solver;
+import de.huege.day6.Day06Solver;
 import de.huege.helpers.Day;
 
 void main(String[] args) throws IOException, URISyntaxException, InterruptedException {
@@ -14,6 +15,7 @@ void main(String[] args) throws IOException, URISyntaxException, InterruptedExce
     solveDay(new Day03Solver());
     solveDay(new Day04Solver());
     solveDay(new Day05Solver());
+    solveDay(new Day06Solver());
 }
 
 void solveDay(Day day) {
