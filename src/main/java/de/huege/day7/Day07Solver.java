@@ -44,16 +44,15 @@ public class Day07Solver extends Day {
         }
     }
 
-
-    private boolean calc(Long match, Long curTotal, List<Long> rest, boolean isPart2) {
+    private boolean calc(Long target, Long currentTotal, List<Long> rest, boolean isPart2) {
         boolean result;
         if (rest.size()==0) {
-            return match.equals(curTotal);
+            return target.equals(currentTotal);
         } else {
-            result = calc(match, curTotal * rest.get(0), rest.subList(1, rest.size()), isPart2);
-            result |= calc(match, curTotal + rest.get(0), rest.subList(1, rest.size()), isPart2);
+            result = calc(target, currentTotal * rest.get(0), rest.subList(1, rest.size()), isPart2);
+            result |= calc(target, currentTotal + rest.get(0), rest.subList(1, rest.size()), isPart2);
             if (isPart2) {
-                result |= calc(match, (long) (curTotal * Math.pow(10, (""+rest.get(0)).length()) + rest.get(0)), rest.subList(1, rest.size()), isPart2);
+                result |= calc(target, (long) (currentTotal * Math.pow(10, (""+rest.get(0)).length()) + rest.get(0)), rest.subList(1, rest.size()), isPart2);
             }
         }
         return result;
