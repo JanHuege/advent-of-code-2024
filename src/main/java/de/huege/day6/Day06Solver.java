@@ -2,7 +2,12 @@ package de.huege.day6;
 
 import module java.base;
 
+import de.huege.common.grids.Position;
 import de.huege.helpers.Day;
+import de.huege.common.grids.Coordinates;
+import de.huege.common.grids.Direction;
+import de.huege.common.grids.Grid;
+import de.huege.common.grids.OutOfBoundsException;
 
 public class Day06Solver extends Day {
 
@@ -82,47 +87,6 @@ public class Day06Solver extends Day {
     }
 }
 
-record Position(int row, int col, Direction direction) {}
-
-record Coordinates(int row, int col) {
-    public static Coordinates fromPosition(Position pos) {
-        return new Coordinates(pos.row(), pos.col());
-    }
-}
-
-enum Direction {
-    NORTH(-1, 0),
-    EAST(0, 1),
-    SOUTH(1, 0),
-    WEST(0, -1);
-
-    final int r;
-    final int c;
-
-    Direction(int r, int c) {
-        this.r = r;
-        this.c = c;
-    }
-
-    Direction right() {
-        return switch (this) {
-            case NORTH -> EAST;
-            case EAST -> SOUTH;
-            case SOUTH -> WEST;
-            case WEST -> NORTH;
-        };
-    }
-
-    Direction left() {
-        return switch (this) {
-            case NORTH -> WEST;
-            case EAST -> NORTH;
-            case SOUTH -> EAST;
-            case WEST -> SOUTH;
-        };
-    }
-}
-
 class Walker {
     private Position currentPosition; 
 
@@ -174,69 +138,3 @@ class Walker {
         path.add(pos);
     }
 }
-
-class Grid {
-    private List<List<Character>> grid = new ArrayList<>();
-    private Set<Character> obstacles = new HashSet<>();
-
-    public Grid(List<String> lines, Set<Character> obstacles) {
-        this.obstacles = obstacles;
-
-        lines.stream().forEach(line -> {
-            var chars = line.chars()
-                .mapToObj(c -> (char) c)
-                .collect(Collectors.toList());
-            grid.add(chars);
-        });
-    }
-
-    public void replaceTile(Position pos, char symbol) {
-        replaceTile(Coordinates.fromPosition(pos), symbol);
-    }
-
-    public void replaceTile(Coordinates pos, char symbol) {
-        grid.get(pos.row()).set(pos.col(), symbol);
-    }
-    
-    public char getTile(Position pos) {
-        return grid.get(pos.row()).get(pos.col());
-    }
-
-    public Optional<Position> searchForCharacter(char symbol) {
-        for (int row = 0; row < grid.size(); row++) {
-            List<Character> currentRow = grid.get(row);
-            for (int col = 0; col < currentRow.size(); col++) {
-                if (currentRow.get(col) == symbol) {
-                    return Optional.of(new Position(row, col, null));
-                }
-            }
-        }
-        return Optional.empty();
-    }
-
-    public List<Position> searchForAllOccurencesForCharacter(char symbol) {
-        var list = new ArrayList<Position>();
-        for (int row = 0; row < grid.size(); row++) {
-            List<Character> currentRow = grid.get(row);
-            for (int col = 0; col < currentRow.size(); col++) {
-                if (currentRow.get(col) == symbol) {
-                    list.add(new Position(row, col, null));
-                }
-            }
-        }
-        return list;
-    }
-
-    public boolean isObstructed(Position pos) throws OutOfBoundsException {
-        try {
-            var symbol = grid.get(pos.row()).get(pos.col());
-            return obstacles.contains(symbol);
-        } catch (Exception e) {
-            throw new OutOfBoundsException();
-        }
-    }
-}
-
-class OutOfBoundsException extends Throwable {}
-class LoopDetectedException extends Throwable {}
-class ObstructedException extends Throwable {}
