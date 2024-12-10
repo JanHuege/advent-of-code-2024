@@ -52,7 +52,6 @@ public class Day10Solver extends Day {
     
     private Set<String> depthFirstSearch(Grid grid, Coordinates pos, int currentHeight,
                           Set<Coordinates> visited) {
-
         Set<String> reachableNines = new HashSet<>();
 
         if (visited.contains(pos)) return reachableNines;
@@ -81,23 +80,22 @@ public class Day10Solver extends Day {
     }
 
     private int calculateRating(Grid grid, Coordinates start) {
-        Set<String> paths = new HashSet<>();
-        StringBuilder currentPath = new StringBuilder();
-        depthFirstSearchForPaths(grid, start, 0, new HashSet<>(), currentPath, paths);
+        var paths = depthFirstSearchForPaths(grid, start, 0, new HashSet<>(), new ArrayList<>());
         return paths.size();
     }
     
-    private void depthFirstSearchForPaths(Grid grid, Coordinates pos, int currentHeight,
-                                  Set<Coordinates> visited, StringBuilder currentPath,
-                                  Set<String> paths) {
-        if (visited.contains(pos)) return;
+    private Set<List<Coordinates>> depthFirstSearchForPaths(Grid grid, Coordinates pos, int currentHeight, Set<Coordinates> visited, List<Coordinates> currentPath) {
+        Set<List<Coordinates>> paths = new HashSet<>();
         
+        if (visited.contains(pos)) return paths;
+    
         visited.add(pos);
-        currentPath.append(pos.row()).append(',').append(pos.col()).append(';');
+        currentPath.add(pos);
         
         char currentTile = grid.getTile(pos);
         if (currentTile == '9') {
-            paths.add(currentPath.toString());
+            paths.add(new ArrayList<>(currentPath));
+            return paths;
         }
         
         for (int i = 0; i < 4; i++) {
@@ -105,14 +103,15 @@ public class Day10Solver extends Day {
             try {
                 char nextTile = grid.getTile(newPos);
                 if ((nextTile - '0') == currentHeight + 1) {
-                    depthFirstSearchForPaths(grid, newPos, currentHeight + 1,
-                               new HashSet<>(visited),
-                               new StringBuilder(currentPath),
-                               paths);
+                    Set<List<Coordinates>> newPaths = depthFirstSearchForPaths(grid, newPos, currentHeight + 1,
+                                                            new HashSet<>(visited),
+                                                            new ArrayList<>(currentPath));
+                    paths.addAll(newPaths);
                 }
             } catch (Exception e) {
                 // Exceptions for control flow :P
             }
         }
+        return paths;
     }
 }
