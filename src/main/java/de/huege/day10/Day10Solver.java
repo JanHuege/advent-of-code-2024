@@ -1,6 +1,7 @@
 package de.huege.day10;
 
 import java.util.*;
+import java.util.stream.Collectors;
 
 import de.huege.helpers.Day;
 import de.huege.common.grids.*;
@@ -21,9 +22,12 @@ public class Day10Solver extends Day {
         
         int totalScore = 0;
         List<Coordinates> trailheads = grid.retrieveCoordinates('0');
-        
+
         for (Coordinates trailhead : trailheads) {
-            totalScore += calculateScore(grid, trailhead);
+            Set<Coordinates> endPoints = findAllPaths(grid, trailhead).stream()
+                .map(path -> path.get(path.size() - 1))
+                .collect(Collectors.toSet());
+            totalScore += endPoints.size();
         }
         
         return totalScore;
@@ -38,50 +42,14 @@ public class Day10Solver extends Day {
         List<Coordinates> trailheads = grid.retrieveCoordinates('0');
         
         for (Coordinates trailhead : trailheads) {
-            totalRating += calculateRating(grid, trailhead);
+            totalRating += findAllPaths(grid, trailhead).size();
         }
         
         return totalRating;
     }
 
-    
-    private int calculateScore(Grid grid, Coordinates start) {
-        Set<String> reachableNines = depthFirstSearch(grid, start, 0, new HashSet<>());
-        return reachableNines.size();
-    }
-    
-    private Set<String> depthFirstSearch(Grid grid, Coordinates pos, int currentHeight,
-                          Set<Coordinates> visited) {
-        Set<String> reachableNines = new HashSet<>();
-
-        if (visited.contains(pos)) return reachableNines;
-        visited.add(pos);
-        
-        char currentTile = grid.getTile(pos);
-        if (currentTile == '9') {
-            reachableNines.add(pos.row() + "," + pos.col());
-            return reachableNines;
-        }
-        
-        for (int i = 0; i < 4; i++) {
-            Coordinates newPos = new Coordinates(pos.row() + DimensionenX[i], pos.col() + DimensionenY[i]);
-            try {
-                char nextTile = grid.getTile(newPos);
-                if ((nextTile - '0') == currentHeight + 1) {
-                    var found = depthFirstSearch(grid, newPos, currentHeight + 1, visited);
-                    reachableNines.addAll(found);
-                }
-            } catch (Exception e) {
-                // Exceptions for control flow :P
-            }
-        }
-
-        return reachableNines;
-    }
-
-    private int calculateRating(Grid grid, Coordinates start) {
-        var paths = depthFirstSearchForPaths(grid, start, 0, new HashSet<>(), new ArrayList<>());
-        return paths.size();
+    private Set<List<Coordinates>> findAllPaths(Grid grid, Coordinates start) {
+        return depthFirstSearchForPaths(grid, start, 0, new HashSet<>(), new ArrayList<>());
     }
     
     private Set<List<Coordinates>> depthFirstSearchForPaths(Grid grid, Coordinates pos, int currentHeight, Set<Coordinates> visited, List<Coordinates> currentPath) {
