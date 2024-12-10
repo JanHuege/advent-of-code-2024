@@ -7,8 +7,8 @@ import de.huege.common.grids.*;
 
 public class Day10Solver extends Day {
 
-    private static final int[] DX = {0, 0, 1, -1};
-    private static final int[] DY = {1, -1, 0, 0};
+    private static final int[] DimensionenX = {0, 0, 1, -1};
+    private static final int[] DimensionenY = {1, -1, 0, 0};
 
     public Day10Solver() {
         super(10);
@@ -44,14 +44,50 @@ public class Day10Solver extends Day {
         return totalRating;
     }
 
-    private static int calculateRating(Grid grid, Coordinates start) {
+    
+    private int calculateScore(Grid grid, Coordinates start) {
+        Set<String> reachableNines = depthFirstSearch(grid, start, 0, new HashSet<>());
+        return reachableNines.size();
+    }
+    
+    private Set<String> depthFirstSearch(Grid grid, Coordinates pos, int currentHeight,
+                          Set<Coordinates> visited) {
+
+        Set<String> reachableNines = new HashSet<>();
+
+        if (visited.contains(pos)) return reachableNines;
+        visited.add(pos);
+        
+        char currentTile = grid.getTile(pos);
+        if (currentTile == '9') {
+            reachableNines.add(pos.row() + "," + pos.col());
+            return reachableNines;
+        }
+        
+        for (int i = 0; i < 4; i++) {
+            Coordinates newPos = new Coordinates(pos.row() + DimensionenX[i], pos.col() + DimensionenY[i]);
+            try {
+                char nextTile = grid.getTile(newPos);
+                if ((nextTile - '0') == currentHeight + 1) {
+                    var found = depthFirstSearch(grid, newPos, currentHeight + 1, visited);
+                    reachableNines.addAll(found);
+                }
+            } catch (Exception e) {
+                // Exceptions for control flow :P
+            }
+        }
+
+        return reachableNines;
+    }
+
+    private int calculateRating(Grid grid, Coordinates start) {
         Set<String> paths = new HashSet<>();
         StringBuilder currentPath = new StringBuilder();
         depthFirstSearchForPaths(grid, start, 0, new HashSet<>(), currentPath, paths);
         return paths.size();
     }
     
-    private static void depthFirstSearchForPaths(Grid grid, Coordinates pos, int currentHeight,
+    private void depthFirstSearchForPaths(Grid grid, Coordinates pos, int currentHeight,
                                   Set<Coordinates> visited, StringBuilder currentPath,
                                   Set<String> paths) {
         if (visited.contains(pos)) return;
@@ -65,7 +101,7 @@ public class Day10Solver extends Day {
         }
         
         for (int i = 0; i < 4; i++) {
-            Coordinates newPos = new Coordinates(pos.row() + DX[i], pos.col() + DY[i]);
+            Coordinates newPos = new Coordinates(pos.row() + DimensionenX[i], pos.col() + DimensionenY[i]);
             try {
                 char nextTile = grid.getTile(newPos);
                 if ((nextTile - '0') == currentHeight + 1) {
@@ -73,36 +109,6 @@ public class Day10Solver extends Day {
                                new HashSet<>(visited),
                                new StringBuilder(currentPath),
                                paths);
-                }
-            } catch (Exception e) {
-                // Exceptions for control flow :P
-            }
-        }
-    }
-    
-    private static int calculateScore(Grid grid, Coordinates start) {
-        Set<String> reachableNines = new HashSet<>();
-        dfs(grid, start, 0, new HashSet<>(), reachableNines);
-        return reachableNines.size();
-    }
-    
-    private static void dfs(Grid grid, Coordinates pos, int currentHeight,
-                          Set<Coordinates> visited, Set<String> reachableNines) {
-        if (visited.contains(pos)) return;
-        visited.add(pos);
-        
-        char currentTile = grid.getTile(pos);
-        if (currentTile == '9') {
-            reachableNines.add(pos.row() + "," + pos.col());
-            return;
-        }
-        
-        for (int i = 0; i < 4; i++) {
-            Coordinates newPos = new Coordinates(pos.row() + DX[i], pos.col() + DY[i]);
-            try {
-                char nextTile = grid.getTile(newPos);
-                if ((nextTile - '0') == currentHeight + 1) {
-                    dfs(grid, newPos, currentHeight + 1, visited, reachableNines);
                 }
             } catch (Exception e) {
                 // Exceptions for control flow :P
