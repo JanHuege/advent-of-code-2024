@@ -45,6 +45,15 @@ public class Grid {
         return grid.get(pos.row()).get(pos.col());
     }
 
+    public Optional<Character> getTileOpt(Coordinates pos) {
+        try {
+            return Optional.of(grid.get(pos.row()).get(pos.col()));
+        } catch (Exception e) {
+            return Optional.empty();
+        }
+    }
+
+
     public boolean hasTile(Coordinates pos) {
         try {
             grid.get(pos.row()).get(pos.col());
